@@ -31,7 +31,7 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 24
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
@@ -41,12 +41,16 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
     implementation fileTree(include: '*.jar', dir: 'libs')
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.2.3'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.2'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.12.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
     implementation 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
+    implementation 'org.jetbrains:annotations:15.0'
 }

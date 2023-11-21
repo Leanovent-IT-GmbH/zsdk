@@ -951,7 +951,7 @@ class _MyAppState extends State<MyApp> {
             calibrationStatus = OperationStatus.SENDING;
           });
           widget.zsdk
-              .doManualCalibrationOverTCPIP(
+              .doManualCalibration(
             address: addressIpController.text,
             port: int.tryParse(addressPortController.text),
           )
@@ -990,7 +990,7 @@ class _MyAppState extends State<MyApp> {
             settingsStatus = OperationStatus.RECEIVING;
           });
           widget.zsdk
-              .getPrinterSettingsOverTCPIP(
+              .getPrinterSettings(
             address: addressIpController.text,
             port: int.tryParse(addressPortController.text),
           )
@@ -998,7 +998,7 @@ class _MyAppState extends State<MyApp> {
             setState(() {
               settingsStatus = OperationStatus.SUCCESS;
               settingsMessage = "$value";
-              updateSettings((Printer.PrinterResponse.fromMap(value)).settings);
+              updateSettings(value);
             });
           }, onError: (error, stacktrace) {
             try {
@@ -1030,7 +1030,7 @@ class _MyAppState extends State<MyApp> {
             settingsStatus = OperationStatus.SENDING;
           });
           widget.zsdk
-              .setPrinterSettingsOverTCPIP(
+              .setPrinterSettings(
                   address: addressIpController.text,
                   port: int.tryParse(addressPortController.text),
                   settings: Printer.PrinterSettings(
@@ -1125,7 +1125,7 @@ class _MyAppState extends State<MyApp> {
             settingsStatus = OperationStatus.SENDING;
           });
           widget.zsdk
-              .setPrinterSettingsOverTCPIP(
+              .setPrinterSettings(
                   address: addressIpController.text,
                   port: int.tryParse(addressPortController.text),
                   settings: Printer.PrinterSettings.defaultSettings())
@@ -1165,7 +1165,7 @@ class _MyAppState extends State<MyApp> {
             checkingStatus = OperationStatus.RECEIVING;
           });
           widget.zsdk
-              .checkPrinterStatusOverTCPIP(
+              .checkPrinterStatus(
             address: addressIpController.text,
             port: int.tryParse(addressPortController.text),
           )
