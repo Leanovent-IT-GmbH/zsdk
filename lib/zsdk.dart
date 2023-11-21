@@ -101,84 +101,20 @@ class ZSDK {
     }
   }
 
-  FutureOr<T> _onTimeout<T>({Duration? timeout}) =>
-      throw PlatformException(
-          code: ErrorCode.EXCEPTION.name,
-          message:
-          "Connection timeout${timeout != null ? " after ${timeout
-              .inSeconds} seconds of waiting" : "."}",
-          details: PrinterResponse(
-            errorCode: ErrorCode.EXCEPTION,
-            message:
-            "Connection timeout${timeout != null ? " after ${timeout
-                .inSeconds} seconds of waiting" : "."}",
-            statusInfo: StatusInfo(
-              Status.UNKNOWN,
-              Cause.NO_CONNECTION,
-            ),
-          ).toMap());
+  FutureOr<T> _onTimeout<T>({Duration? timeout}) => throw PlatformException(
+      code: ErrorCode.EXCEPTION.name,
+      message:
+          "Connection timeout${timeout != null ? " after ${timeout.inSeconds} seconds of waiting" : "."}",
+      details: PrinterResponse(
+        errorCode: ErrorCode.EXCEPTION,
+        message:
+            "Connection timeout${timeout != null ? " after ${timeout.inSeconds} seconds of waiting" : "."}",
+        statusInfo: StatusInfo(
+          Status.UNKNOWN,
+          Cause.NO_CONNECTION,
+        ),
+      ).toMap());
 
-  Future doManualCalibrationOverTCPIP(
-          {required String address, int? port, Duration? timeout}) =>
-      _channel.invokeMethod(_DO_MANUAL_CALIBRATION_OVER_TCP_IP, {
-        _address: address,
-        _port: port,
-      }).timeout(
-          timeout ??= const Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
-          onTimeout: () => _onTimeout(timeout: timeout));
-
-  Future printConfigurationLabelOverTCPIP(
-          {required String address, int? port, Duration? timeout}) =>
-      _channel.invokeMethod(_PRINT_CONFIGURATION_LABEL_OVER_TCP_IP, {
-        _address: address,
-        _port: port,
-      }).timeout(
-          timeout ??= const Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
-          onTimeout: () => _onTimeout(timeout: timeout));
-
-  Future rebootPrinterOverTCPIP(
-          {required String address, int? port, Duration? timeout}) =>
-      _channel.invokeMethod(_REBOOT_PRINTER_OVER_TCP_IP, {
-        _address: address,
-        _port: port,
-      }).timeout(
-          timeout ??= const Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
-          onTimeout: () => _onTimeout(timeout: timeout));
-
-  Future checkPrinterStatusOverTCPIP(
-          {required String address, int? port, Duration? timeout}) =>
-      _channel.invokeMethod(_CHECK_PRINTER_STATUS_OVER_TCP_IP, {
-        _address: address,
-        _port: port,
-      }).timeout(
-          timeout ??= const Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
-          onTimeout: () => _onTimeout(timeout: timeout));
-
-  Future getPrinterSettingsOverTCPIP(
-          {required String address, int? port, Duration? timeout}) =>
-      _channel.invokeMethod(_GET_PRINTER_SETTINGS_OVER_TCP_IP, {
-        _address: address,
-        _port: port,
-      }).timeout(
-          timeout ??= const Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
-          onTimeout: () => _onTimeout(timeout: timeout));
-
-  Future setPrinterSettingsOverTCPIP(
-          {required PrinterSettings settings,
-          required String address,
-          int? port,
-          Duration? timeout}) =>
-      _channel
-          .invokeMethod(
-              _SET_PRINTER_SETTINGS_OVER_TCP_IP,
-              {
-                _address: address,
-                _port: port,
-              }..addAll(settings.toMap()))
-          .timeout(
-              timeout ??= const Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
-              onTimeout: () => _onTimeout(timeout: timeout));
-              
   Future<List<ZebraBluetoothDevice>> searchForBluetoothDevices(
       {String? macAddress, Duration? timeout}) async {
     Map<dynamic, dynamic> tempResult = await _channel.invokeMethod(
@@ -204,21 +140,22 @@ class ZSDK {
       {required String address, int? port, Duration? timeout}) async {
     Map<dynamic, dynamic> tempRes = await _channel
         .invokeMethod(_CHECK_PRINTER_STATUS, {
-      _address: address,
-      _port: port,
-    })
+          _address: address,
+          _port: port,
+        })
         .timeout(timeout ??= Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
-        onTimeout: () => _onTimeout(timeout: timeout))
+            onTimeout: () => _onTimeout(timeout: timeout))
         .onError((error, stackTrace) => (error as PlatformException).details);
 
     return PrinterResponse.fromMap(tempRes);
   }
 
-  Future printZplFile({required String filePath,
-    required String address,
-    int? port,
-    PrinterConf? printerConf,
-    Duration? timeout}) =>
+  Future printZplFile(
+          {required String filePath,
+          required String address,
+          int? port,
+          PrinterConf? printerConf,
+          Duration? timeout}) =>
       _printFile(
           method: _PRINT_ZPL_FILE,
           filePath: filePath,
@@ -227,12 +164,13 @@ class ZSDK {
           printerConf: printerConf,
           timeout: timeout);
 
-  Future _printFile({required method,
-    required String filePath,
-    required String address,
-    int? port,
-    PrinterConf? printerConf,
-    Duration? timeout}) =>
+  Future _printFile(
+          {required method,
+          required String filePath,
+          required String address,
+          int? port,
+          PrinterConf? printerConf,
+          Duration? timeout}) =>
       _channel.invokeMethod(method, {
         _filePath: filePath,
         _address: address,
@@ -245,11 +183,12 @@ class ZSDK {
           timeout ??= const Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
           onTimeout: () => _onTimeout(timeout: timeout));
 
-  Future<PrinterResponse> printZplData({required String data,
-    required String address,
-    int? port,
-    PrinterConf? printerConf,
-    Duration? timeout}) =>
+  Future<PrinterResponse> printZplData(
+          {required String data,
+          required String address,
+          int? port,
+          PrinterConf? printerConf,
+          Duration? timeout}) =>
       _printData(
           method: _PRINT_ZPL_DATA,
           data: data,
@@ -258,12 +197,13 @@ class ZSDK {
           printerConf: printerConf,
           timeout: timeout);
 
-  Future<PrinterResponse> _printData({required method,
-    required dynamic data,
-    required String address,
-    int? port,
-    PrinterConf? printerConf,
-    Duration? timeout}) async {
+  Future<PrinterResponse> _printData(
+      {required method,
+      required dynamic data,
+      required String address,
+      int? port,
+      PrinterConf? printerConf,
+      Duration? timeout}) async {
     return PrinterResponse.fromMap(await _channel.invokeMethod(method, {
       _data: data,
       _address: address,
@@ -273,18 +213,18 @@ class ZSDK {
       _dpi: printerConf?.dpi,
       _orientation: printerConf?.orientation?.name,
     }).timeout(timeout ??= Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
-        onTimeout: () => _onTimeout(timeout: timeout))
-    as Map<dynamic, dynamic>);
+            onTimeout: () => _onTimeout(timeout: timeout))
+        as Map<dynamic, dynamic>);
   }
 
   Future<PrinterResponse> doManualCalibration(
-      {required String address, int? port, Duration? timeout}) async =>
+          {required String address, int? port, Duration? timeout}) async =>
       PrinterResponse.fromMap(await _channel
           .invokeMethod(_DO_MANUAL_CALIBRATION, {
         _address: address,
         _port: port,
       }).timeout(timeout ??= Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
-          onTimeout: () => _onTimeout(timeout: timeout)));
+              onTimeout: () => _onTimeout(timeout: timeout)));
 
   Future<PrinterSettings?> getPrinterSettings(
       {required String address, int? port, Duration? timeout}) async {
@@ -293,29 +233,28 @@ class ZSDK {
       _address: address,
       _port: port,
     }).timeout(timeout ??= Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
-        onTimeout: () => _onTimeout(timeout: timeout)));
+            onTimeout: () => _onTimeout(timeout: timeout)));
 
     return tempResponse.settings;
   }
 
-
-  Future setPrinterSettings({required PrinterSettings settings,
-    required String address,
-    int? port,
-    Duration? timeout}) =>
+  Future setPrinterSettings(
+          {required PrinterSettings settings,
+          required String address,
+          int? port,
+          Duration? timeout}) =>
       _channel
           .invokeMethod(
-          _SET_PRINTER_SETTINGS,
-          {
-            _address: address,
-            _port: port,
-          }
-            ..addAll(settings.toMap()))
+              _SET_PRINTER_SETTINGS,
+              {
+                _address: address,
+                _port: port,
+              }..addAll(settings.toMap()))
           .timeout(timeout ??= Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
-          onTimeout: () => _onTimeout(timeout: timeout));
+              onTimeout: () => _onTimeout(timeout: timeout));
 
   Future resetPrinterSettings(
-      {required String address, int? port, Duration? timeout}) =>
+          {required String address, int? port, Duration? timeout}) =>
       setPrinterSettings(
           settings: PrinterSettings.defaultSettings(),
           address: address,
@@ -325,18 +264,19 @@ class ZSDK {
   ///
 
   Future printConfigurationLabelOverTCPIP(
-      {required String address, int? port, Duration? timeout}) =>
+          {required String address, int? port, Duration? timeout}) =>
       _channel.invokeMethod(_PRINT_CONFIGURATION_LABEL_OVER_TCP_IP, {
         _address: address,
         _port: port,
       }).timeout(timeout ??= Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
           onTimeout: () => _onTimeout(timeout: timeout));
 
-  Future printPdfFileOverTCPIP({required String filePath,
-    required String address,
-    int? port,
-    PrinterConf? printerConf,
-    Duration? timeout}) =>
+  Future printPdfFileOverTCPIP(
+          {required String filePath,
+          required String address,
+          int? port,
+          PrinterConf? printerConf,
+          Duration? timeout}) =>
       _printFile(
           method: _PRINT_PDF_FILE_OVER_TCP_IP,
           filePath: filePath,
@@ -345,11 +285,12 @@ class ZSDK {
           printerConf: printerConf,
           timeout: timeout);
 
-  Future printPdfDataOverTCPIP({required ByteData data,
-    required String address,
-    int? port,
-    PrinterConf? printerConf,
-    Duration? timeout}) =>
+  Future printPdfDataOverTCPIP(
+          {required ByteData data,
+          required String address,
+          int? port,
+          PrinterConf? printerConf,
+          Duration? timeout}) =>
       _printData(
           method: _PRINT_PDF_DATA_OVER_TCP_IP,
           data: data,
@@ -357,37 +298,4 @@ class ZSDK {
           port: port,
           printerConf: printerConf,
           timeout: timeout);
-
-  Future printZplDataOverTCPIP(
-          {required String data,
-          required String address,
-          int? port,
-          PrinterConf? printerConf,
-          Duration? timeout}) =>
-      _printDataOverTCPIP(
-          method: _PRINT_ZPL_DATA_OVER_TCP_IP,
-          data: data,
-          address: address,
-          port: port,
-          printerConf: printerConf,
-          timeout: timeout);
-
-  Future _printDataOverTCPIP(
-          {required method,
-          required dynamic data,
-          required String address,
-          int? port,
-          PrinterConf? printerConf,
-          Duration? timeout}) =>
-      _channel.invokeMethod(method, {
-        _data: data,
-        _address: address,
-        _port: port,
-        _cmWidth: printerConf?.cmWidth,
-        _cmHeight: printerConf?.cmHeight,
-        _dpi: printerConf?.dpi,
-        _orientation: printerConf?.orientation?.name,
-      }).timeout(
-          timeout ??= const Duration(seconds: DEFAULT_CONNECTION_TIMEOUT),
-          onTimeout: () => _onTimeout(timeout: timeout));
 }
